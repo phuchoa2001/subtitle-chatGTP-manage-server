@@ -60,6 +60,7 @@ class Logincontrollers  {
     })
   // setTimeout(() => {
     console.log( "Account:"  , Account);
+    res.json(Account);
   // }, 3000);
   }
   async getcookie(req , res) { // Client Cookie và lấy Tài khoản về 
