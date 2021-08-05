@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.js",
+    "start:dev": "nodemon index.js",
     "test": "echo \\\"Error: Have error\\\" && exit 1"
   },
   "author": "hieupv",
