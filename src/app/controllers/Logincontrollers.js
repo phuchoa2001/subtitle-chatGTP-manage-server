@@ -51,6 +51,21 @@ class Logincontrollers  {
 
     }
   }
+  async api (req , res) {
+    console.log("start data")
+    try {
+    Account = data;
+    console.log("start data 2")
+    await Login.find({} , function(err , data) {
+      console.log(data);
+      Account = data;
+    })
+    res.json(data);
+  }catch(err){
+    
+  }
+
+  }
   async getcookie(req , res) { // Client Cookie và lấy Tài khoản về 
      var cookies = req.body.cookies;
      var Account = null;

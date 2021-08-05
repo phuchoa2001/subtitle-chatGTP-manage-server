@@ -6,5 +6,6 @@ router.post('/checkaccount' , Logincontrollers.checkaccount)
 router.put('/verifyemail' , Logincontrollers.verifyemail)
 router.post('/' , Logincontrollers.login)
 router.post('/getcookie' , Logincontrollers.getcookie)
+router.get('/api' , Logincontrollers.api)
 router.put('/confirmemaillink' , Logincontrollers.confirmemaillink)
 module.exports = router;
