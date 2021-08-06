@@ -2,6 +2,7 @@ const sharp = require('sharp');
 const path = require("path");
 const Login = require("./models/Logins");
 const { json } = require('express');
+const imgur = require('imgur');
 const port = "http://localhost:3001";
 class Profilecontrollers {
     async updateavatar(req, res) { // Up ảnh Đại diện
@@ -10,11 +11,12 @@ class Profilecontrollers {
         // req.body will hold the text fields, if there were any
         //Đổi ảnh bằng cookie 
         if(req.file){
-        Login.updateOne({cookies : cookies} , {avatar : `${port}/result-upload/${req.file.filename}` }).then();
        await sharp(req.file.path)
         .resize({width: 100, height: 100})   
         .toFile(`${path.join(__dirname, `../../public/result-upload`)}${"\\" + req.file.filename}`);
-        res.status(200).json({urlavatar:`${port}/result-upload/${req.file.filename}`}); 
+        const url = await imgur.uploadFile(`${path.join(__dirname, `../../public/result-upload`)}${"\\" + req.file.filename}`);
+        Login.updateOne({cookies : cookies} , {avatar : url.link }).then();
+        res.status(200).json({urlavatar:url.link}); 
         }
         else{
          res.status(200).json();
@@ -26,12 +28,12 @@ class Profilecontrollers {
         // req.body will hold the text fields, if there were any
         //Đổi ảnh bằng cookie 
         if(req.file){
-        Login.updateOne({cookies : cookies} , {photobeer : `${port}/result-upload/${req.file.filename}` }).then();
        await sharp(req.file.path)
         .resize({width: 400, height: 375})   
         .toFile(`${path.join(__dirname, `../../public/result-upload`)}${"\\" + req.file.filename}`);
-        console.log(`${port}/result-upload/${req.file.filename}`);
-        res.status(200).json({urlbeer:`${port}/result-upload/${req.file.filename}`});
+        const url = await imgur.uploadFile(`${path.join(__dirname, `../../public/result-upload`)}${"\\" + req.file.filename}`);
+        Login.updateOne({cookies : cookies} , {photobeer : url.link }).then();
+        res.status(200).json({urlbeer:url.link});
         }else{
          res.status(200).json();
         }
@@ -68,5 +70,4 @@ class Profilecontrollers {
       }
     }
 }
-console.log(`${path.join(__dirname, `../../public/reusult-upload`)}\\name.png`);
 module.exports = new Profilecontrollers;

@@ -1,5 +1,6 @@
 const Login = require('./models/Logins')
 const nodemailer = require("nodemailer");
+const db = require('../../config/db');
 class Logincontrollers  {
   // [GET] /login
   async index(req, res) {
@@ -11,7 +12,6 @@ class Logincontrollers  {
     var cookies = req.body.cookies;
     var verifySMS = req.body.verifySMS;
     var Account = null;
-    try {
     await Login.findOne({ cookies: cookies, verifySMS: verifySMS }, function (err, data) {
       Account = data
     })
@@ -23,15 +23,11 @@ class Logincontrollers  {
         console.log("Verify Email failure !")
         res.status(200).json({ messger: "Verify Email failure" });
       }
-    }catch(err) {
-
-    }
   }
   async checkaccount (req , res) { // Kiểm Trả Đăng ký tài khoản 
     const name = req.body.name ;
     const value = req.body.value ;
     var account ;
-    try{
     if(name === "Username") {
       await  Login.findOne({Username:value} , (err , data) => {
          account = data;
@@ -47,31 +43,23 @@ class Logincontrollers  {
       res.status(200).json({messger : "not existed yet" })
     }
     }
-    catch(err) {
-
-    }
-  }
-   async api (req , res) {
+   async api(req , res) {
      var Account = null;
     console.log("start data 2")
      await Login.find({} , function(err , data) {
       console.log(data);
       Account = data;
     })
-  // setTimeout(() => {
     console.log( "Account:"  , Account);
     res.json(Account);
-  // }, 3000);
   }
+
   async getcookie(req , res) { // Client Cookie và lấy Tài khoản về 
      var cookies = req.body.cookies;
      var Account = null;
-     try{
-     await Login.findOne({cookies : cookies} , function(err , data) {
-       console.log(data);
-       Account = data;
-     })
-      console.log(Accounts)
+       await  Login.findOne({cookies : cookies} , function(err , data) {
+        Account = data;
+       })
         var  Accounts = {
           Username: Account.Username ,
           Email : Account.Email , 
@@ -84,16 +72,11 @@ class Logincontrollers  {
           verifyEmail : Account.verifyEmail
         }
         res.status(200).json(Accounts)
-      }
-      catch(err) {
-
-      }
   }
   async login(req, res) { // Đăng nhập
     var Username = req.body.username ;
     var Password = req.body.password;
     var Account = null;
-    try {
     await Login.findOne({Username : Username , Password: Password} , (err , data) => {
       console.log(data);
       Account = data;
@@ -112,9 +95,6 @@ class Logincontrollers  {
       res.status(200).json(Accounts)
     }else {
       res.status(200).json({messger : "password false"})
-    }
-    }catch(err) {
-
     }
   }
    regtration(req, res) { // đăng ký và gữi Gmail
@@ -159,7 +139,6 @@ class Logincontrollers  {
   async confirmemaillink (req , res){
      var link = req.body.link;
      var Account = null;
-     try{
      await  Login.findOne({confirmEmailLink : link} , function(err , data) {
       Account = data
      })
@@ -171,10 +150,6 @@ class Logincontrollers  {
         console.log("Verify Email failure !")
         res.status(200).json({ messger: "Verify Email failure" });
       }
-  }
-  catch(err) {
-
-  }
   }
 }
 module.exports = new Logincontrollers;
