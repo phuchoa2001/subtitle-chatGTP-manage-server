@@ -108,6 +108,7 @@ class Logincontrollers  {
     const account = new Login(body);
     account.save();
     /// send gmail : 
+    console.log("da chay vao day ");
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -118,11 +119,11 @@ class Logincontrollers  {
     var options = {
       form: "chuthanhnam003@gmail.com",
       to: Email,
-      subject: `Tài Khoản của Bạn đã đăng ký tại https://xoanen.herokuapp.com/ 
+      subject: `Tài Khoản của Bạn đã đăng ký tại http://xoanen.surge.sh 
           với Email: ${Email} nếu là bạn . hãy nhập mã này ${verifySMS} vào ứng dụng `,
-      text: `Tài Khoản của Bạn đã đăng ký tại https://xoanen.herokuapp.com/ 
+      text: `Tài Khoản của Bạn đã đăng ký tại http://xoanen.surge.sh/ 
        với Email: ${Email} nếu là bạn . hãy nhập mã này ${verifySMS} vào ứng dụng  
-       hoặc bạn có thể xác nhận email bằng link :http://localhost:3002/login/confirmEmail/${confirmEmailLink}`,
+       hoặc bạn có thể xác nhận email bằng link :http://xoanen.surge.sh/login/confirmEmail/${confirmEmailLink}`,
       html: "<a herf="/">HTML version of the message</a>"
     }
     transporter.sendMail(options, function (err, info) {
