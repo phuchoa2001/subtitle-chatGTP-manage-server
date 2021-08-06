@@ -113,7 +113,7 @@ class Logincontrollers  {
       service: 'gmail',
       auth: {
         user: "chuthanhnam003@gmail.com", // generated ethereal user
-        pass: "phuchoa00", // generated ethereal password
+        pass: "phuchoa002", // generated ethereal password
       },
     });
     var options = {
