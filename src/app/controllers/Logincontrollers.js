@@ -116,6 +116,7 @@ class Logincontrollers  {
         pass: "phuchoa002", // generated ethereal password
       },
     });
+    console.log("da gui gmail")
     var options = {
       form: "chuthanhnam003@gmail.com",
       to: Email,
