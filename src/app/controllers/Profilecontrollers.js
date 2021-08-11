@@ -1,9 +1,13 @@
 const sharp = require('sharp');
 const path = require("path");
 const Login = require("./models/Logins");
-const { json } = require('express');
-const imgur = require('imgur');
 const port = "http://localhost:3001";
+var cloudinary = require('cloudinary').v2
+cloudinary.config({ 
+  cloud_name: 'xoanen', 
+  api_key: '774386681112683', 
+  api_secret: 'jZeifLqmfUItgPg_qEzyvn07W6Y' 
+});
 class Profilecontrollers {
     async updateavatar(req, res) { // Up ảnh Đại diện
         const cookies = req.body.cookies;
@@ -14,9 +18,16 @@ class Profilecontrollers {
        await sharp(req.file.path)
         .resize({width: 100, height: 100})   
         .toFile(`${path.join(__dirname, `../../public/result-upload`)}${"\\" + req.file.filename}`);
-        const url = await imgur.uploadFile(`${path.join(__dirname, `../../public/result-upload`)}${"\\" + req.file.filename}`);
-        Login.updateOne({cookies : cookies} , {avatar : url.link }).then();
-        res.status(200).json({urlavatar:url.link}); 
+        let url;
+        await  cloudinary.uploader.upload(
+          `${path.join(__dirname, `../../public/result-upload`)}${"\\" + req.file.filename}`, 
+          {public_id: 'sample_remote'}, 
+          function(error, result) { 
+           url = result.url;
+          }
+        );
+        Login.updateOne({cookies : cookies} , {avatar : url }).then();
+        res.status(200).json({urlavatar:url}); 
         }
         else{
          res.status(200).json();
@@ -31,9 +42,17 @@ class Profilecontrollers {
        await sharp(req.file.path)
         .resize({width: 400, height: 375})   
         .toFile(`${path.join(__dirname, `../../public/result-upload`)}${"\\" + req.file.filename}`);
-        const url = await imgur.uploadFile(`${path.join(__dirname, `../../public/result-upload`)}${"\\" + req.file.filename}`);
-        Login.updateOne({cookies : cookies} , {photobeer : url.link }).then();
-        res.status(200).json({urlbeer:url.link});
+        let url;
+        await  cloudinary.uploader.upload(
+          `${path.join(__dirname, `../../public/result-upload`)}${"\\" + req.file.filename}`, 
+          {public_id: 'sample_remote'}, 
+          function(error, result) { 
+           url = result.url;
+          }
+        );
+        console.log(url);
+        Login.updateOne({cookies : cookies} , {photobeer : url }).then();
+        res.status(200).json({urlbeer:url});
         }else{
          res.status(200).json();
         }
