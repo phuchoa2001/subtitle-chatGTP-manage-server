@@ -10,10 +10,11 @@ class Logincontrollers  {
   }
   async verifyemail(req, res) { // xác nhận email 
     var cookies = req.body.cookies;
-    var verifySMS = req.body.verifySMS;
+    var verifySMS = req.body.verifySMS; 
     var Account = null;
     await Login.findOne({ cookies: cookies, verifySMS: verifySMS }, function (err, data) {
       Account = data
+      console.log(data);
     })
       if (Account) {  
         Login.updateOne({ cookies: cookies, verifySMS: verifySMS }, { verifyEmail: true }).then();
