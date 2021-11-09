@@ -12,7 +12,7 @@ const { Server } = require("socket.io");
 const socket = require("./socket")
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://xoanen.surge.sh",
     methods: ["GET", "POST"]
   }
 });
