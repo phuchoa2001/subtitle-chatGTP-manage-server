@@ -5,7 +5,7 @@ const fs = require("fs");
 console.log(path.join(__dirname, "../../public"))
 class xoaNenControllers {
     index(req, res) {
-        var string = `${path.join(__dirname, "../../public")}\\upload\\${req.file.filename}`
+        var string = `${path.join(__dirname, "../../public")}/upload/${req.file.filename}`
         console.log(string);
         const formData = new FormData();
         formData.append('size', 'auto');
