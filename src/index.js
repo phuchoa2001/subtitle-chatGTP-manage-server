@@ -22,7 +22,6 @@ const db = require('./config/db')
 const nodemailer = require("nodemailer");
 const methodOverride = require('method-override')
 app.use(methodOverride('X-HTTP-Method-Override'))
-//  kết nối socket io ; 
 socket(io);
 //conneact DB
 db.connect();
@@ -34,9 +33,10 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.engine('hbs', handlebars({
   extname: '.hbs'
 }));
-route(app)
+route(app);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'resources/views'));
 server.listen(process.env.PORT || 3001, () => {
   console.log('Server đang chay tren cong ' + process.env.PORT);
+  console.log("app");
 });

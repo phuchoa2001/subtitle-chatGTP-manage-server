@@ -80,5 +80,5 @@ function Socket(io) {
             })
         }
     });
-}
+};
 module.exports = Socket;
