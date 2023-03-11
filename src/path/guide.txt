@@ -1,0 +1,2 @@
+isAdmin : nếu bật là true . thì có quyền admin mới được dùng
+isLogin : nếu bật là true . thì phải login mới được dùng
