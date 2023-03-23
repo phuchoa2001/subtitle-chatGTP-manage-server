@@ -44,7 +44,7 @@ function route(app) {
 		const nextFun = confirm({ isAdmin, isLogin });
 
 		app.get(`${item.router}`, nextFun, (req, res) => {
-			getList(req, res, item.schema, item.populates)
+			getList(req, res, item.schema, item.populates , item.fieldSearch)
 		})
 		app.get(`${router}/:id`, nextFun, (req, res) => {
 			getId(req, res, item.schema, item.populates)
@@ -74,19 +74,20 @@ function route(app) {
 	})
 
 	// Tạo tài khoản Admin 
-	app.post('/registerAdmin', async (req, res) => {
-		const token = jwt.sign(AccountAdmin, JWT_SECRET);
-		const hashedPassword = bcrypt.hashSync(AccountAdmin.password, SALTROUNDS);
+	// app.post('/registerAdmin', async (req, res) => {
+	// 	const token = jwt.sign(AccountAdmin, JWT_SECRET);
+	// 	const hashedPassword = bcrypt.hashSync(AccountAdmin.password, SALTROUNDS);
 
-	    AccountAdmin.token = token;
-		AccountAdmin.password = hashedPassword;
+	//     AccountAdmin.token = token;
+	// 	AccountAdmin.password = hashedPassword;
 
-		const user = await userSchema.create(AccountAdmin);
-		res.status(201).json(user);
-	})
+	// 	const user = await userSchema.create(AccountAdmin);
+	// 	res.status(201).json(user);
+	// })
 	// JSON Web Tokens
 	app.post('/register', isAdmin, register)
 	app.post('/login', login)
 	app.post('/protected', verifyToken, protected)
+	app.post('/profile', verifyToken, protected)
 }
 module.exports = route;

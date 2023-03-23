@@ -11,6 +11,7 @@ const Path = [
 		populates : [],
 		isAdmin : true,
 		isLogin : true , 
+		fieldSearch : ["username" , "email"],
 		allowPublic : false
 	},
 	{
@@ -19,6 +20,7 @@ const Path = [
 		populates : [],
 		isAdmin : true,
 		isLogin : true,
+		fieldSearch : ["username" , "email"],
 		allowPublic : false
 	},
 	{
@@ -26,15 +28,17 @@ const Path = [
 		schema : blog,
 		populates : ["category , bookshop"],
 		isAdmin : false,
-		isLogin : false , 
+		isLogin : true , 
+		fieldSearch : ["username" , "email"],
 		allowPublic : true
 	},
 	{
 		router : "/categorys" ,
 		schema : category,
 		populates : [],
-		isAdmin : true,
+		isAdmin : false,
 		isLogin : true , 
+		fieldSearch : ["username" , "email"],
 		allowPublic : true
 	},
 	{
@@ -42,7 +46,8 @@ const Path = [
 		schema : bookshop,
 		populates : [],
 		isAdmin : false,
-		isLogin : false , 
+		isLogin : true , 
+		fieldSearch : ["username" , "email"],
 		allowPublic : false
 	}
 ]

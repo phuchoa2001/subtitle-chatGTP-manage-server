@@ -13,8 +13,7 @@ const put = async (req, res, Schema , populates) => {
     await product.execPopulate();
     res.json(product);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Lỗi server' });
+    res.status(500).json({ success: false, message: err.message });
   }
 }
 

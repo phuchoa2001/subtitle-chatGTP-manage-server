@@ -1,4 +1,4 @@
-const getList = async (req, res, Schema, populates) => {
+const getList = async (req, res, Schema, populates, fieldSearch) => {
   try {
     const { filter, sort, page, limit, operator, search, populate } = req.query;
 
@@ -16,8 +16,12 @@ const getList = async (req, res, Schema, populates) => {
 
     // Thực hiện Tìm kiếm toàn văn bản
     if (search) {
-      query.where({ $text: { $search: search } });
-      countQuery.where({ $text: { $search: search } });
+      query.where({
+        $or: fieldSearch.map(item => ({ [item]: { $regex: new RegExp(`.*${search}.*`, "i") }}))
+      });
+      countQuery.where({
+        $or: fieldSearch.map(item => ({ [item]: { $regex: new RegExp(`.*${search}.*`, "i") }}))
+      });
     }
 
     // Thực hiện Sắp xếp
