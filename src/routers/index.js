@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
+const cloudinary = require("cloudinary").v2;
 
 const Path = require("../path");
 
@@ -38,6 +39,34 @@ function route(app) {
 	app.get("/", (req, res) => {
 		res.render("home");
 	})
+
+		// Upload File 
+	app.post(`/images/upload`, async (req, res) => {
+		const { name, url } = req.body;
+		await cloudinary.uploader.upload(url,{ public_id: name },
+			function (error, result) {
+				if (result) {
+					const module_obj = {
+						public_id: result.public_id,
+						width: result.width,
+						height: result.height,
+						format: result.format,
+						url: result.url,
+					};
+
+					req.body = {
+						...req.body , 
+						...module_obj
+					}
+					
+					post(req, res, imageSchema , [])
+				} else {
+					res.json({ payload: "error" });
+				}
+			}
+		);
+	})
+
 	Path.forEach(item => {
 		const { router, isAdmin, isLogin, allowPublic } = item;
 

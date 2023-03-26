@@ -22,6 +22,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 route(app);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'resources/views'));
+app.use(express.json({limit: '5mb'}));
+app.use(express.urlencoded({limit: '5mb', extended: true}));
+
 server.listen(process.env.PORT || 3001, () => {
   console.log('Server đang chay tren cong ' + process.env.PORT);
   console.log("app");
