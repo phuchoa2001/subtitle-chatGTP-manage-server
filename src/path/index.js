@@ -5,6 +5,10 @@ const bookshop = require("../schema/bookshop")
 const permission = require("../schema/permission")
 const image = require("../schema/images");
 
+const subtitleDone = require("../schema/subtitledone");
+const subtitlewaiting = require("../schema/subtitlewaiting");
+const subtitleoutstanding = require("../schema/subtitleoutstanding");
+
 const Path = [
 	{
 		router : "/users" ,
@@ -25,29 +29,38 @@ const Path = [
 		allowPublic : false
 	},
 	{
-		router : "/blogs" ,
-		schema : blog,
-		populates : ["category , bookshop"],
-		isAdmin : false,
-		isLogin : true , 
-		fieldSearch : ["username" , "email"],
-		allowPublic : true
-	},
-	{
-		router : "/categorys" ,
-		schema : category,
-		populates : [],
-		isAdmin : false,
-		isLogin : true , 
-		fieldSearch : ["username" , "email"],
-		allowPublic : true
-	},
-	{
 		router : "/bookshops" ,
 		schema : bookshop,
 		populates : [],
 		isAdmin : false,
 		isLogin : true , 
+		fieldSearch : ["username" , "email"],
+		allowPublic : false
+	},
+	{
+		router : "/subtitledone" ,
+		schema : subtitleDone,
+		populates : [],
+		isAdmin : false,
+		isLogin : false , 
+		fieldSearch : ["username" , "email"],
+		allowPublic : false
+	},
+	{
+		router : "/subtitlewaiting" ,
+		schema : subtitlewaiting,
+		populates : [],
+		isAdmin : false,
+		isLogin : false , 
+		fieldSearch : ["username" , "email"],
+		allowPublic : false
+	},
+	{
+		router : "/subtitleoutstanding" ,
+		schema : subtitleoutstanding,
+		populates : [],
+		isAdmin : false,
+		isLogin : false , 
 		fieldSearch : ["username" , "email"],
 		allowPublic : false
 	},
