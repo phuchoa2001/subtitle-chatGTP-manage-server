@@ -26,6 +26,9 @@ const { JWT_SECRET } = require("../contants/jwt");
 const { SALTROUNDS } = require("../contants/bcrypt");
 
 const userSchema = require("../schema/users");
+const subtitleoutstandingSchema = require("../schema/subtitleoutstanding");
+const subtitleDoneSchema = require("../schema/subtitledone");
+const subtitleWaitingSchema = require("../schema/subtitlewaiting");
 
 const AccountAdmin = {
 	username: "Phuchoa",
@@ -40,10 +43,10 @@ function route(app) {
 		res.render("home");
 	})
 
-		// Upload File 
+	// Upload File 
 	app.post(`/images/upload`, async (req, res) => {
 		const { name, url } = req.body;
-		await cloudinary.uploader.upload(url,{ public_id: name },
+		await cloudinary.uploader.upload(url, { public_id: name },
 			function (error, result) {
 				if (result) {
 					const module_obj = {
@@ -55,11 +58,11 @@ function route(app) {
 					};
 
 					req.body = {
-						...req.body , 
+						...req.body,
 						...module_obj
 					}
-					
-					post(req, res, imageSchema , [])
+
+					post(req, res, imageSchema, [])
 				} else {
 					res.json({ payload: "error" });
 				}
@@ -73,7 +76,7 @@ function route(app) {
 		const nextFun = confirm({ isAdmin, isLogin });
 
 		app.get(`${item.router}`, nextFun, (req, res) => {
-			getList(req, res, item.schema, item.populates , item.fieldSearch)
+			getList(req, res, item.schema, item.populates, item.fieldSearch)
 		})
 		app.get(`${router}/:id`, nextFun, (req, res) => {
 			getId(req, res, item.schema, item.populates)
@@ -100,6 +103,26 @@ function route(app) {
 				increaseView(req, res, item.schema)
 			})
 		}
+	})
+
+	app.get("/subtitle/done", async (req, res) => {
+		const elemtOutStanding = await subtitleoutstandingSchema.findOne({}); 
+		const product = await subtitleDoneSchema.create({
+			data : elemtOutStanding.data ,
+			name : elemtOutStanding.name
+		});
+		await subtitleWaitingSchema.deleteMany({ name: elemtOutStanding.name });
+
+		const elemtOne = await subtitleWaitingSchema.findOne({}, null, { sort: { _id: 1 } });
+		if (!elemtOne) {
+			const result = await subtitleoutstandingSchema.deleteMany({ name: elemtOutStanding.name });
+		} else {
+			await subtitleoutstandingSchema.findByIdAndUpdate(elemtOutStanding["_id"], {
+				data : elemtOne.data ,
+				name : elemtOne.name
+			} , { new: true });
+		}
+		res.json(product);
 	})
 
 	// Tạo tài khoản Admin 

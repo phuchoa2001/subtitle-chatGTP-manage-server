@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 const subtitleWaitingSchema = new Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true , unique: true },
     data : { type: Array, required: true }
 });
 module.exports = mongoose.model('subtitleWaiting', subtitleWaitingSchema);
