@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require("../contants/jwt");
 const { PERMISSION } = require("../contants/permission");
-const userSchema = require("../schema/users");
+const userSchema = require("../routers/schema/users");
 
 function noAuthenticated(req, res, next) {
   // Không cần đăng nhập

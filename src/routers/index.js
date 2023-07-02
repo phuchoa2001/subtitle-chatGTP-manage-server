@@ -25,10 +25,10 @@ const { PERMISSION } = require("../contants/permission");
 const { JWT_SECRET } = require("../contants/jwt");
 const { SALTROUNDS } = require("../contants/bcrypt");
 
-const userSchema = require("../schema/users");
-const subtitleoutstandingSchema = require("../schema/subtitleoutstanding");
-const subtitleDoneSchema = require("../schema/subtitledone");
-const subtitleWaitingSchema = require("../schema/subtitlewaiting");
+const userSchema = require("./schema/users");
+const subtitleoutstandingSchema = require("./schema/subtitleoutstanding");
+const subtitleDoneSchema = require("./schema/subtitledone");
+const subtitleWaitingSchema = require("./schema/subtitlewaiting");
 
 const AccountAdmin = {
 	username: "Phuchoa",
@@ -106,10 +106,10 @@ function route(app) {
 	})
 
 	app.get("/subtitle/done", async (req, res) => {
-		const elemtOutStanding = await subtitleoutstandingSchema.findOne({}); 
+		const elemtOutStanding = await subtitleoutstandingSchema.findOne({});
 		const product = await subtitleDoneSchema.create({
-			data : elemtOutStanding.data ,
-			name : elemtOutStanding.name
+			data: elemtOutStanding.data,
+			name: elemtOutStanding.name
 		});
 		await subtitleWaitingSchema.deleteMany({ name: elemtOutStanding.name });
 
@@ -118,9 +118,9 @@ function route(app) {
 			const result = await subtitleoutstandingSchema.deleteMany({ name: elemtOutStanding.name });
 		} else {
 			await subtitleoutstandingSchema.findByIdAndUpdate(elemtOutStanding["_id"], {
-				data : elemtOne.data ,
-				name : elemtOne.name
-			} , { new: true });
+				data: elemtOne.data,
+				name: elemtOne.name
+			}, { new: true });
 		}
 		res.json(product);
 	})

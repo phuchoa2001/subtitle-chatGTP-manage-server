@@ -1,4 +1,4 @@
-const userSchema = require("../../schema/users");
+const userSchema = require("../../routers/schema/users");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 
