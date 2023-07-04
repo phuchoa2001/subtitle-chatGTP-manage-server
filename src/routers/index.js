@@ -30,12 +30,37 @@ const subtitleoutstandingSchema = require("./schema/subtitleoutstanding");
 const subtitleDoneSchema = require("./schema/subtitledone");
 const subtitleWaitingSchema = require("./schema/subtitlewaiting");
 
+const LIST_STATUS = {
+	done: "done",
+	waiting: "waiting"
+}
+
 const AccountAdmin = {
 	username: "Phuchoa",
 	age: 22,
 	password: "admin",
 	email: "phuchoa1202@gmail.com",
 	permission: PERMISSION.admin
+}
+
+const doneTask = async (req, res) => {
+	const elemtOutStanding = await subtitleoutstandingSchema.findOne({});
+	const product = await subtitleDoneSchema.create({
+		data: elemtOutStanding.data,
+		name: elemtOutStanding.name
+	});
+	await subtitleWaitingSchema.deleteMany({ name: elemtOutStanding.name });
+
+	const elemtOne = await subtitleWaitingSchema.findOne({}, null, { sort: { _id: 1 } });
+	if (!elemtOne) {
+		const result = await subtitleoutstandingSchema.deleteMany({ name: elemtOutStanding.name });
+	} else {
+		await subtitleoutstandingSchema.findByIdAndUpdate(elemtOutStanding["_id"], {
+			data: elemtOne.data,
+			name: elemtOne.name
+		}, { new: true });
+	}
+	res.json(product);
 }
 
 function route(app) {
@@ -105,25 +130,7 @@ function route(app) {
 		}
 	})
 
-	app.get("/subtitle/done", async (req, res) => {
-		const elemtOutStanding = await subtitleoutstandingSchema.findOne({});
-		const product = await subtitleDoneSchema.create({
-			data: elemtOutStanding.data,
-			name: elemtOutStanding.name
-		});
-		await subtitleWaitingSchema.deleteMany({ name: elemtOutStanding.name });
-
-		const elemtOne = await subtitleWaitingSchema.findOne({}, null, { sort: { _id: 1 } });
-		if (!elemtOne) {
-			const result = await subtitleoutstandingSchema.deleteMany({ name: elemtOutStanding.name });
-		} else {
-			await subtitleoutstandingSchema.findByIdAndUpdate(elemtOutStanding["_id"], {
-				data: elemtOne.data,
-				name: elemtOne.name
-			}, { new: true });
-		}
-		res.json(product);
-	})
+	app.get("/subtitle/done", doneTask)
 
 	// Tạo tài khoản Admin 
 	// app.post('/registerAdmin', async (req, res) => {
@@ -141,5 +148,91 @@ function route(app) {
 	app.post('/login', login)
 	app.post('/protected', verifyToken, protected)
 	app.post('/profile', verifyToken, protected)
+
+	// viết nhận việc và trả việc 
+	app.post("/acceptJob", async (req, res) => {
+		const { permission } = req.body;
+
+		const data = await subtitleWaitingSchema.findOne({}).exec();
+
+		if (!data) {
+			res.json({ message: "bạn đã xong công việc hãy nghĩ ngơ ", isJob: true })
+			return;
+		}
+
+		let firstItem = null;
+		var currentTime = new Date();
+		let indexFirstTem = null;
+
+		for (var i = 0; i < data.data.length; i++) {
+			var currentItem = data.data[i];
+			let targetTime = currentTime;
+
+			if (currentItem.time?.getTime) {
+				targetTime = currentItem.time?.getTime() + (10 * 60000);
+			}
+
+			if (
+				(!currentItem.permission && !currentItem.status) ||
+				(currentItem.permission === permission && currentItem.status === LIST_STATUS.waiting) ||
+				(targetTime <= currentTime && currentItem.status !== LIST_STATUS.done)
+			) {
+				firstItem = currentItem;
+				indexFirstTem = i;
+				break;
+			}
+		}
+
+		const resultItem = {
+			...firstItem,
+			permission: permission,
+			idSub: Math.random(),
+			idFile: data["_id"],
+			time: currentTime,
+			status: LIST_STATUS.waiting
+		}
+
+		const newData = [...data.data];
+
+		newData[indexFirstTem] = resultItem;
+
+		subtitleWaitingSchema.findByIdAndUpdate(data["_id"], { data: newData }, { new: true }).then((updatedData) => {
+			res.json({
+				data: resultItem
+			});
+		})
+	});
+
+	app.post("/doneJob", async (req, res) => {
+		const { idFile, data } = req.body;
+
+		const dataBD = await subtitleWaitingSchema.findOne({ _id: idFile }).exec();
+
+		const newData = [...dataBD.data];
+		const index = newData.findIndex((item) => item.idSub === data.idSub)
+
+		const resultItem = {
+			...data,
+			status: LIST_STATUS.done
+		}
+		newData[index] = resultItem;
+
+		subtitleWaitingSchema.findByIdAndUpdate(idFile, { data: newData }, { new: true }).then(async (updatedData) => {
+			if (index === newData.length - 1) {
+				const product = await subtitleDoneSchema.create({
+					data: newData,
+					name: dataBD.name
+				});
+				await subtitleWaitingSchema.deleteMany({ _id: idFile });
+				res.json(product);
+				return;
+			};
+
+			res.json({
+				data: resultItem
+			});
+		})
+
+	})
 }
 module.exports = route;
