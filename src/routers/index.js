@@ -183,6 +183,13 @@ function route(app) {
 			}
 		}
 
+		if(!firstItem) {
+			res.json({
+				data: null
+			});
+			return
+		}
+
 		const resultItem = {
 			...firstItem,
 			permission: permission,
