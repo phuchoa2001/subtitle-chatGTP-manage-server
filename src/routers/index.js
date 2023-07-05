@@ -218,7 +218,7 @@ function route(app) {
 		newData[index] = resultItem;
 
 		subtitleWaitingSchema.findByIdAndUpdate(idFile, { data: newData }, { new: true }).then(async (updatedData) => {
-			if (index === newData.length - 1) {
+			if (newData.every(item => item.status === LIST_STATUS.done)) {
 				const product = await subtitleDoneSchema.create({
 					data: newData,
 					name: dataBD.name
