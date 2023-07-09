@@ -156,7 +156,7 @@ function route(app) {
 		const data = await subtitleWaitingSchema.findOne({}).exec();
 
 		if (!data) {
-			res.json({ message: "bạn đã xong công việc hãy nghĩ ngơ ", isJob: true })
+			res.json(null)
 			return;
 		}
 
