@@ -43,6 +43,15 @@ const AccountAdmin = {
 	permission: PERMISSION.admin
 }
 
+function getElementsAroundIndex(array, index) {
+	const start = Math.max(0, index - 8);
+	const end = Math.min(array.length, index + 9); // +1 because slice() does not include end index
+
+	return {
+			before: array.slice(start, index),
+			after: array.slice(index + 1, end),
+	};
+}
 const doneTask = async (req, res) => {
 	const elemtOutStanding = await subtitleoutstandingSchema.findOne({});
 	const product = await subtitleDoneSchema.create({
@@ -156,7 +165,9 @@ function route(app) {
 		const data = await subtitleWaitingSchema.findOne({}).exec();
 
 		if (!data) {
-			res.json(null)
+			res.json({
+				data: null
+			})
 			return;
 		}
 
@@ -190,12 +201,16 @@ function route(app) {
 			return
 		}
 
+		const {before, after} = getElementsAroundIndex(data.data, indexFirstTem);
+
 		const resultItem = {
 			...firstItem,
 			permission: permission,
 			idSub: Math.random(),
 			idFile: data["_id"],
 			time: currentTime,
+			before : before.map((item) => item.text).join(","), 
+			after :  after.map((item) => item.text).join(","),
 			status: LIST_STATUS.waiting
 		}
 
