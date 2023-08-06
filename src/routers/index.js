@@ -162,10 +162,10 @@ function route(app) {
 	app.post("/acceptJob", async (req, res) => {
 		const { permission } = req.body;
 
-		const dataWithPermission = await subtitleWaitingSchema.findOne({ permission: { $ne: permission } }).exec();
+		const dataWithPermission = await subtitleWaitingSchema.findOne({ permission: permission }).exec();
 
-		const data = dataWithPermission || await subtitleWaitingSchema.findOne({}).exec();
-
+		const data = dataWithPermission || await subtitleWaitingSchema.findOne({ permission: { $ne: permission } }).exec();
+		
 		if (!data) {
 			res.json({
 				data: null
