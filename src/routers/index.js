@@ -162,7 +162,9 @@ function route(app) {
 	app.post("/acceptJob", async (req, res) => {
 		const { permission } = req.body;
 
-		const data = await subtitleWaitingSchema.findOne({}).exec();
+		const dataWithPermission = await subtitleWaitingSchema.findOne({ permission: { $ne: permission } }).exec();
+
+		const data = dataWithPermission || await subtitleWaitingSchema.findOne({}).exec();
 
 		if (!data) {
 			res.json({
@@ -218,7 +220,7 @@ function route(app) {
 
 		newData[indexFirstTem] = resultItem;
 
-		subtitleWaitingSchema.findByIdAndUpdate(data["_id"], { data: newData }, { new: true }).then((updatedData) => {
+		subtitleWaitingSchema.findByIdAndUpdate(data["_id"], { data: newData , permission }, { new: true }).then((updatedData) => {
 			res.json({
 				data: resultItem
 			});
