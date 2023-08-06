@@ -164,7 +164,7 @@ function route(app) {
 
 		const dataWithPermission = await subtitleWaitingSchema.findOne({ permission: permission }).exec();
 
-		const data = dataWithPermission || await subtitleWaitingSchema.findOne({ permission: { $ne: permission } }).exec();
+		const data = dataWithPermission || await subtitleWaitingSchema.findOne({ permission: { $exists: false } }).exec();
 		
 		if (!data) {
 			res.json({
