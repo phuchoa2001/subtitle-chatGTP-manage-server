@@ -61,12 +61,7 @@ const Path = [
     isAdmin: false,
     isLogin: false,
     fieldSearch: ["username", "email"],
-    allowPublic: false,
-    routerMore: (app, action, item) => {
-      app.get(`${item.router}/:id`, action.nextFun, (req, res) => {
-        getId(req, res, item.schema, item.populates)
-      })
-    }
+    allowPublic: false
   },
   {
     router: "/subtitleoutstanding",
