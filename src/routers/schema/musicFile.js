@@ -15,7 +15,8 @@ const musicFileSchema = new Schema({
 	processed_by: { type: Number },
 	processed_text: { type: String },
 	created_at: { type: Date, default: Date.now },
-	updated_at: { type: Date, default: Date.now }
+	updated_at: { type: Date, default: Date.now },
+	assigned_at: { type: Date }
 });
 
 module.exports = mongoose.model('MusicFile', musicFileSchema);
