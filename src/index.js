@@ -17,12 +17,11 @@ db.connect();
 app.use(cors())
 app.use(morgan('combined'))
 app.use(express.static(path.join(__dirname, 'public')))
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'resources/views'));
 app.use(express.json({limit: '500mb'}));
 app.use(express.urlencoded({limit: '500mb', extended: true, parameterLimit: 50000}));
 
 route(app);
+
 server.listen(process.env.PORT || 3001, () => {
   console.log('Server đang chay tren cong ' + process.env.PORT);
   console.log("app");

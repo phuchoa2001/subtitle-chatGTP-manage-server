@@ -11,6 +11,7 @@
   "author": "hieupv",
   "license": "ISC",
   "dependencies": {
+    "FormData": "^0.10.1",
     "axios": "^0.24.0",
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.35.0",
@@ -18,7 +19,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.2",
-    "FormData": "^0.10.1",
+    "hbs": "^4.2.0",
     "imgur": "^1.0.2",
     "jsonwebtoken": "^9.0.0",
     "method-override": "^3.0.0",
@@ -29,7 +30,8 @@
     "nodemon": "^2.0.12",
     "sharp": "^0.28.3",
     "socket.io": "^4.3.1",
-    "socketio": "^1.0.0"
+    "socketio": "^1.0.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"
