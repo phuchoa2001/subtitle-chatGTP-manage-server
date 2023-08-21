@@ -137,7 +137,11 @@ const Path = [
           file.assigned_at = new Date();
           file.status = 2;
           await file.save();
-          res.json(file);
+          res.json(`!pip install git+https://github.com/openai/whisper.git
+          !sudo apt update && sudo apt install ffmpeg 
+          !wget -O test.mp3 ${item.file_path}
+          !whisper "test5.mp3" --model small --language Vietnamese`);
+          
         } catch (error) {
           console.error(error);
           res.status(500).json({ message: "Lỗi máy chủ" });
