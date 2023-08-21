@@ -139,7 +139,7 @@ const Path = [
           await file.save();
           res.send(`!pip install git+https://github.com/openai/whisper.git
           !sudo apt update && sudo apt install ffmpeg 
-          !wget -O test.mp3 ${item.file_path}
+          !wget -O test.mp3 ${file.file_path}
           !whisper "test5.mp3" --model small --language Vietnamese`);
 
         } catch (error) {
