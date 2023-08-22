@@ -144,6 +144,28 @@ const Path = [
           res.status(500).json({ message: "Lỗi máy chủ" });
         }
       });
+      app.post(`${item.router}` + '/retrieve-file', action.nextFun , async (req, res) => {
+        try {
+          const { processed_by , processed_text } = req.body;
+
+          let file = await item.schema.findOne({ processed_by, status: 2 });
+
+          if (!file) {
+            return res.status(404).json({ message: "Không tìm thấy tài liệu phù hợp" , error : true });
+          }
+          
+          file.processed_by = processed_by;
+          file.assigned_at = new Date();
+          file.status = 3;
+          file.processed_text = processed_text;
+          await file.save();
+          res.send(file);
+
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: "Lỗi máy chủ" });
+        }
+      });
     }
   },
 ]
