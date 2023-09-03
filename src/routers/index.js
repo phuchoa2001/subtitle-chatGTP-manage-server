@@ -92,6 +92,7 @@ function route(app) {
 		const public_id = uuidv4();
 		await cloudinary.uploader.upload(url, { public_id: public_id + extension, resource_type: "raw" },
 			function (error, result) {
+				console.log("result" , result , error);
 				if (result) {
 					const module_obj = {
 						public_id: result.public_id,

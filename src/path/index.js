@@ -10,6 +10,11 @@ const cloudinary = require("cloudinary").v2;
 const subtitleDone = require("../routers/schema/subtitledone");
 const subtitlewaiting = require("../routers/schema/subtitlewaiting");
 const subtitleoutstanding = require("../routers/schema/subtitleoutstanding");
+const TelegramBot = require('node-telegram-bot-api');
+
+const token = process.env.YOUR_TELEGRAM_BOT_TOKEN;
+const bot = new TelegramBot(token, {polling: true});
+const chatId = 6299146884;
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -79,6 +84,20 @@ const Path = [
     isAdmin: false,
     isLogin: true,
     allowPublic: true
+  },
+  {
+    router: "/node-telegram-bot-api",
+    schema: image,
+    populates: [],
+    isAdmin: false,
+    isLogin: false,
+    allowPublic: false,
+    routerMore: (app, action, item) => { 
+      app.get(`${item.router}` + '/chat', action.nextFun , async (req, res) => {
+        bot.sendMessage(chatId, req.query.chat || 'Hoàn thành' );
+        res.json({ success : true })
+      })
+    }
   },
   {
     router: "/musicFile",
