@@ -56,7 +56,7 @@ const Path = [
     populates: [],
     isAdmin: false,
     isLogin: false,
-    fieldSearch: ["username", "email"],
+    fieldSearch: ["courseName", "name"],
     allowPublic: false
   },
   {
@@ -65,7 +65,7 @@ const Path = [
     populates: [],
     isAdmin: false,
     isLogin: false,
-    fieldSearch: ["username", "email"],
+    fieldSearch: ["courseName", "name"],
     allowPublic: false
   },
   {
