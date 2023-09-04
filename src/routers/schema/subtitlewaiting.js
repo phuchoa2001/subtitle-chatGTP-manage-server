@@ -4,6 +4,7 @@ const ObjectId = Schema.ObjectId;
 
 const subtitleWaitingSchema = new Schema({
     name: { type: String, required: true , unique: true },
+    courseName : { type: String} , 
     permission : { type: String} , 
     data : { type: Array, required: true }
 });

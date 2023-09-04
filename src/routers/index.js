@@ -263,7 +263,8 @@ function route(app) {
 			if (newData.every(item => item.status === LIST_STATUS.done)) {
 				const product = await subtitleDoneSchema.create({
 					data: newData,
-					name: dataBD.name
+					name: dataBD.name,
+					courseName : dataBD.courseName
 				});
 				await subtitleWaitingSchema.deleteMany({ _id: idFile });
 				res.json(product);
