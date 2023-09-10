@@ -10,6 +10,8 @@ dotenv.config();
 const route = require('./routers')
 const db = require('./config/db')
 const methodOverride = require('method-override')
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 app.use(methodOverride('X-HTTP-Method-Override'))
 dotenv.config();
 //conneact DB
@@ -21,7 +23,6 @@ app.use(express.json({limit: '500mb'}));
 app.use(express.urlencoded({limit: '500mb', extended: true, parameterLimit: 50000}));
 
 route(app);
-
 server.listen(process.env.PORT || 3001, () => {
   console.log('Server đang chay tren cong ' + process.env.PORT);
   console.log("app");

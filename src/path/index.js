@@ -5,6 +5,9 @@ const bookshop = require("../routers/schema/bookshop")
 const permission = require("../routers/schema/permission")
 const image = require("../routers/schema/images");
 const musicFile = require("../routers/schema/musicFile");
+const strings = require("../routers/schema/strings");
+const roles = require("../routers/schema/roles");
+const templatePrompts = require("../routers/schema/templatePrompts");
 const cloudinary = require("cloudinary").v2;
 
 const subtitleDone = require("../routers/schema/subtitledone");
@@ -13,7 +16,7 @@ const subtitleoutstanding = require("../routers/schema/subtitleoutstanding");
 const TelegramBot = require('node-telegram-bot-api');
 
 const token = process.env.YOUR_TELEGRAM_BOT_TOKEN;
-const bot = new TelegramBot(token, {polling: true});
+const bot = new TelegramBot(token, { polling: true });
 const chatId = 6299146884;
 
 cloudinary.config({
@@ -92,11 +95,56 @@ const Path = [
     isAdmin: false,
     isLogin: false,
     allowPublic: false,
-    routerMore: (app, action, item) => { 
-      app.get(`${item.router}` + '/chat', action.nextFun , async (req, res) => {
-        bot.sendMessage(chatId, req.query.chat || 'Hoàn thành' );
-        res.json({ success : true })
+    routerMore: (app, action, item) => {
+      app.get(`${item.router}` + '/chat', action.nextFun, async (req, res) => {
+        bot.sendMessage(chatId, req.query.chat || 'Hoàn thành');
+        res.json({ success: true })
       })
+    }
+  },
+  {
+    router: "/roles",
+    schema: roles,
+    populates: [],
+    isAdmin: false,
+    fieldSearch: ["name", "desc"],
+    isLogin: false,
+    allowPublic: true
+  },
+  {
+    router: "/templatePrompts",
+    schema: templatePrompts,
+    populates: [],
+    fieldSearch: ["name", "desc"],
+    isAdmin: false,
+    isLogin: false,
+    allowPublic: true
+  },
+  {
+    router: "/string",
+    schema: strings,
+    populates: ["role"],
+    isAdmin: false,
+    isLogin: false,
+    allowPublic: false,
+    routerMore: (app, action, item) => {
+      app.get(`${item.router}/search`, async (req, res) => {
+        const roleName = req.query.name;
+
+        // Tìm kiếm role dựa trên tên mà không phân biệt chữ hoa và chữ thường
+        const role = await roles.findOne({ name: new RegExp('^' + roleName + '$', 'i') });
+        if (!role) {
+          return res.status(404).json({ message: 'Role not found' });
+        }
+
+        // Tìm kiếm trong bảng strings dựa trên role ID
+        const texts = await strings.find({ 'role': role._id });
+        if (texts.length === 0) {
+          return res.status(404).json({ message: 'No texts found for the given role name' });
+        }
+
+        res.json(texts);
+      });
     }
   },
   {
@@ -130,7 +178,7 @@ const Path = [
           res.status(500).json({ success: false, message: err.message });
         }
       })
-      app.post(`${item.router}` + '/assign-file', action.nextFun , async (req, res) => {
+      app.post(`${item.router}` + '/assign-file', action.nextFun, async (req, res) => {
         try {
           const { processed_by } = req.body;
 
@@ -149,9 +197,9 @@ const Path = [
           }
 
           if (!file) {
-            return res.status(404).json({ message: "Không tìm thấy tài liệu phù hợp" , error : true });
+            return res.status(404).json({ message: "Không tìm thấy tài liệu phù hợp", error: true });
           }
-          
+
           file.processed_by = processed_by;
           file.assigned_at = new Date();
           file.status = 2;
@@ -163,16 +211,16 @@ const Path = [
           res.status(500).json({ message: "Lỗi máy chủ" });
         }
       });
-      app.post(`${item.router}` + '/retrieve-file', action.nextFun , async (req, res) => {
+      app.post(`${item.router}` + '/retrieve-file', action.nextFun, async (req, res) => {
         try {
-          const { processed_by , processed_text } = req.body;
+          const { processed_by, processed_text } = req.body;
 
           let file = await item.schema.findOne({ processed_by, status: 2 });
 
           if (!file) {
-            return res.status(404).json({ message: "Không tìm thấy tài liệu phù hợp" , error : true });
+            return res.status(404).json({ message: "Không tìm thấy tài liệu phù hợp", error: true });
           }
-          
+
           file.processed_by = processed_by;
           file.assigned_at = new Date();
           file.status = 3;
